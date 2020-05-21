@@ -1,12 +1,12 @@
-package com.example.demo.secret.service.impl;
+package com.example.demo.external.impl;
 
 import com.example.demo.domain.model.User;
-import com.example.demo.secret.service.secretService;
+import com.example.demo.external.Secret;
 
-public class SecretServiceUserImpl implements secretService {
+public class SecretUserImpl implements Secret {
     /**
      * 外部APIからユーザ情報を呼び出す想定
-     * 想定上のため、固定値を返却
+     * 想定上のため、暫定固定値を返却
      */
     public User getUser(int userId) {
         User user = new User();

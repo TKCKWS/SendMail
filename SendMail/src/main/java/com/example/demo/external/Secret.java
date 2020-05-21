@@ -1,7 +1,7 @@
-package com.example.demo.secret.service;
+package com.example.demo.external;
 
 import com.example.demo.domain.model.User;
 
-public interface secretService {
+public interface Secret {
     public User getUser(int userId);
 }
