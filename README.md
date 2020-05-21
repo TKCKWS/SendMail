@@ -1,1 +1,23 @@
 # SendMail
+メール送信API
+- src
+    - main
+        - java.com.example.demo
+            - Application.java `Main Application Class`
+            - sendmail
+                - domain `ドメイン層`
+                    - model `モデルクラス`
+                    - repository `レポジトリクラス`
+                    - service `ビジネスロジッククラス(インターフェイス)`
+                        - SendMailService.java `メール送信処理インターフェイス`
+                        - impl `ビジネスロジッククラス(実装)`
+                            - SendMailServiceCancelImpl.java `キャンセルメール送信処理`
+                            - SendMailServiceCreateImpl.java `新規予約メール送信処理`
+                            - SendMailServiceUpdateImpl.java `更新メール送信処理`
+                - api
+                    - controller `コントローラ`
+                        - SendMailController.java
+        - resources
+    - test
+        - java.com.example.demo
+        - resources
