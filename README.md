@@ -11,12 +11,13 @@
                         - Shop.java `お店情報`
                         - User.java `ユーザ情報`
                     - repository `レポジトリクラス`
-                        - ReservationDao.java `予約情報取得インターフェイス`
-                        - ShopDao.java `お店情報取得インターフェイス`
-                        - impl
+                        - mybatis
+                            - ReservationMapper.java `予約情報取得インターフェイス`
+                            - ShopMapper.java `お店情報取得インターフェイス`
                     - service `ビジネスロジッククラス(インターフェイス)`
                         - SendMailService.java `メール送信処理インターフェイス`
                         - impl `ビジネスロジッククラス(実装)`
+                            - SendMailServiceImpl.java `メール送信処理(共通的処理の実装用)`
                             - SendMailServiceCancelImpl.java `キャンセルメール送信処理`
                             - SendMailServiceCreateImpl.java `新規予約メール送信処理`
                             - SendMailServiceUpdateImpl.java `更新メール送信処理`
@@ -25,8 +26,11 @@
                         - impl `ユーザ情報取得処理`
                 - api
                     - controller `コントローラ`
-                        - SendMailController.java
+                        - SendMailController.java `メール送信APIコントローラ`
         - resources
+            - com.example.demo.sendmail.domain.repository.mybatis
+                - ReservationMapper.xml
+                - UserMapper.xml
     - test
         - java.com.example.demo
         - resources
