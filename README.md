@@ -7,13 +7,22 @@
             - sendmail
                 - domain `ドメイン層`
                     - model `モデルクラス`
+                        - Reservation.java `予約情報`
+                        - Shop.java `お店情報`
+                        - User.java `ユーザ情報`
                     - repository `レポジトリクラス`
+                        - ReservationDao.java `予約情報取得インターフェイス`
+                        - ShopDao.java `お店情報取得インターフェイス`
+                        - impl
                     - service `ビジネスロジッククラス(インターフェイス)`
                         - SendMailService.java `メール送信処理インターフェイス`
                         - impl `ビジネスロジッククラス(実装)`
                             - SendMailServiceCancelImpl.java `キャンセルメール送信処理`
                             - SendMailServiceCreateImpl.java `新規予約メール送信処理`
                             - SendMailServiceUpdateImpl.java `更新メール送信処理`
+                - external `外部層`
+                    - Secret.java `秘密情報取得処理インターフェイス`
+                        - impl `ユーザ情報取得処理`
                 - api
                     - controller `コントローラ`
                         - SendMailController.java

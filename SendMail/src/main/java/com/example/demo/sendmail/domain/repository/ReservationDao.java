@@ -7,7 +7,7 @@ import com.example.demo.domain.model.Reservation;
 
 public interface ReservationDao {
 
-    // Reservationテーブルのデータを1件取得
+    // Reservationテーブルのデータを取得
     public Reservation select(String id) throws DataAccessException;
 
     // Reservationテーブルのデータを更新
