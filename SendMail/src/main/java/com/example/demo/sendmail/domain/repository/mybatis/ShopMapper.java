@@ -8,5 +8,5 @@ import com.example.demo.sendmail.domain.model.Shop;
 public interface ShopMapper {
 
     // Shopテーブルのデータを取得
-    public Shop select(String id);
+    public Shop select(int id);
 }

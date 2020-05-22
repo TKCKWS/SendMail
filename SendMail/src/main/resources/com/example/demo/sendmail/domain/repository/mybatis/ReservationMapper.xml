@@ -8,8 +8,8 @@
         <id column="reservation_id" property="reservationId" />
         <result column="user_id" property="userId" />
         <result column="shop_id" property="shopId" />
-        <result column="reservation_start" property="ReservationStart" />
-        <result column="reservation_end" property="ReservationEnd" />
+        <result column="reservation_start" property="reservationStart" />
+        <result column="reservation_end" property="reservationEnd" />
         <result column="number" property="number" />
         <result column="status" property="status" />
     </resultMap>

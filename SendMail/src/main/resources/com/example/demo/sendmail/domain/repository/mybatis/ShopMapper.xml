@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.sendmail.domain.repository.mybatis.ShopMapper">
+    <!-- マッピング定義 -->
+    <resultMap type="com.example.demo.sendmail.domain.model.Shop" id="shop">
+        <id column="shop_id" property="shopId" />
+        <result column="name" property="name" />
+        <result column="mail_address" property="mailAddress" />
+    </resultMap>
+
+    <!-- 1件検索 -->
+    <select id="select" parameterType="int" resultType="com.example.demo.sendmail.domain.model.Shop">
+        SELECT
+            shop_id,
+            name,
+            mail_address
+        FROM
+            shop
+        WHERE
+            shop_id = #{shopId}
+    </select>
+
+</mapper>
