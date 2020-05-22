@@ -1,6 +1,6 @@
 package com.example.demo.sendmail.domain.service;
 
-import com.example.demo.domain.model.Request;
+import com.example.demo.sendmail.domain.model.Request;
 
 public interface SendMailService {
 

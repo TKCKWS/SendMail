@@ -1,7 +1,7 @@
-package com.example.demo.external.impl;
+package com.example.demo.sendmail.external.impl;
 
-import com.example.demo.domain.model.User;
-import com.example.demo.external.Secret;
+import com.example.demo.sendmail.domain.model.User;
+import com.example.demo.sendmail.external.Secret;
 
 public class SecretUserImpl implements Secret {
     /**

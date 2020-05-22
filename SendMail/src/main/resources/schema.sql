@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS reservation (
     user_id INT,                      /* ユーザID */
     shop_id INT,                      /* お店ID */
     reservation_start DATETIME,       /* 開始日時 */
-    resevation_end DATETIME,          /* 終了日時 */
+    reservation_end DATETIME,         /* 終了日時 */
     number INT,                       /* 予約人数 */
     status INT                        /* 状態 0:通常 */
 );

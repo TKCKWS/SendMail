@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.domain.model.Request;
+import com.example.demo.sendmail.domain.model.Request;
 import com.example.demo.sendmail.domain.service.SendMailService;
 import com.example.demo.sendmail.domain.service.impl.SendMailServiceCancelImpl;
 import com.example.demo.sendmail.domain.service.impl.SendMailServiceCreateImpl;
