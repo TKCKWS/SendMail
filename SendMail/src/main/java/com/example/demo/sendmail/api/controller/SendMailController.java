@@ -32,7 +32,7 @@ public class SendMailController {
 
         try {
             SendMailService service = this.getService(request.getType());
-            service.sendMail(request.getType(), request.getReservationId());
+            service.sendMail(request);
         } catch (Exception e) {
             return "NG";
         }
