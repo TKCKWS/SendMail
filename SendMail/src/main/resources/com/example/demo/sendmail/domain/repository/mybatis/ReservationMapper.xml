@@ -4,7 +4,7 @@
 
 <mapper namespace="com.example.demo.sendmail.domain.repository.mybatis.ReservationMapper">
     <!-- マッピング定義 -->
-    <resultMap type="com.example.demo.sendmail.domain.model.Reservation" id="reservation">
+    <resultMap type="com.example.demo.sendmail.domain.model.Reservation" id="reservationMap">
         <id column="reservation_id" property="reservationId" />
         <result column="user_id" property="userId" />
         <result column="shop_id" property="shopId" />
@@ -15,7 +15,7 @@
     </resultMap>
 
     <!-- 1件検索 -->
-    <select id="select" parameterType="int" resultType="com.example.demo.sendmail.domain.model.Reservation">
+    <select id="select" parameterType="int" resultMap="reservationMap">
         SELECT
             reservation_id,
             user_id,

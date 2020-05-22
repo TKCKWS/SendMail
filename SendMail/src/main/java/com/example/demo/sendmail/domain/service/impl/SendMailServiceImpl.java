@@ -19,14 +19,18 @@ public class SendMailServiceImpl implements SendMailService {
     ReservationMapper reservationMapper;
     @Autowired
     ShopMapper shopMapper;
+//    @Autowired
+//    Secret secret;
 
     @Override
     public boolean sendMail(Request request) {
         System.out.println("SendMailServiceImpl");
         Reservation reservation = reservationMapper.select(request.getReservationId());
         System.out.println(reservation);
-        Shop shop = shopMapper.select(1); // TODO shopIdがreservationからとれるようになったら修正
+        Shop shop = shopMapper.select(reservation.getShopId());
         System.out.println(shop);
+//        User user = secret.getUser(reservation.getUserId());
+//        System.out.println(user);
         return true;
     }
 }
