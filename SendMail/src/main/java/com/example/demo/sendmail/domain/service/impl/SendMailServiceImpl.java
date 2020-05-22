@@ -10,7 +10,7 @@ import com.example.demo.sendmail.domain.repository.mybatis.ReservationMapper;
 import com.example.demo.sendmail.domain.service.SendMailService;
 
 @Transactional
-@Service
+@Service("SendMailServiceImpl")
 public class SendMailServiceImpl implements SendMailService {
 
     @Autowired
