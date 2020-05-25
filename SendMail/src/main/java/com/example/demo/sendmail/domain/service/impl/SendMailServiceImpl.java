@@ -60,6 +60,8 @@ public class SendMailServiceImpl implements SendMailService {
         // データ取得
         this.getData();
 
+        this.setContext();
+
         // ボディ部取得
         this.getMailBody();
 
@@ -117,7 +119,13 @@ public class SendMailServiceImpl implements SendMailService {
         // ユーザ情報取得
         user = secret.getUser(this.reservation.getUserId());
         System.out.println(this.user);
+    }
 
+    /**
+     * 出力内容設定
+     */
+    private void setContext() {
+        this.context.setVariable("userName", this.user.getName());
     }
 
     /**
