@@ -7,9 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.sendmail.domain.model.Request;
 import com.example.demo.sendmail.domain.model.Reservation;
 import com.example.demo.sendmail.domain.model.Shop;
+import com.example.demo.sendmail.domain.model.User;
 import com.example.demo.sendmail.domain.repository.mybatis.ReservationMapper;
 import com.example.demo.sendmail.domain.repository.mybatis.ShopMapper;
 import com.example.demo.sendmail.domain.service.SendMailService;
+import com.example.demo.sendmail.external.Secret;
 
 @Transactional
 @Service("SendMailServiceImpl")
@@ -19,8 +21,8 @@ public class SendMailServiceImpl implements SendMailService {
     ReservationMapper reservationMapper;
     @Autowired
     ShopMapper shopMapper;
-//    @Autowired
-//    Secret secret;
+    @Autowired
+    Secret secret;
 
     @Override
     public boolean sendMail(Request request) {
@@ -29,8 +31,8 @@ public class SendMailServiceImpl implements SendMailService {
         System.out.println(reservation);
         Shop shop = shopMapper.select(reservation.getShopId());
         System.out.println(shop);
-//        User user = secret.getUser(reservation.getUserId());
-//        System.out.println(user);
+        User user = secret.getUser(reservation.getUserId());
+        System.out.println(user);
         return true;
     }
 }
