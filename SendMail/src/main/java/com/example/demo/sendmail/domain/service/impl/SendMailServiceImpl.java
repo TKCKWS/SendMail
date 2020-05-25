@@ -19,6 +19,9 @@ import com.example.demo.sendmail.external.Secret;
 @Service("SendMailServiceImpl")
 public class SendMailServiceImpl implements SendMailService {
 
+    /* リクエスト */
+    protected Request request;
+
     /* データ取得処理用 */
     @Autowired
     ReservationMapper reservationMapper;
@@ -27,29 +30,42 @@ public class SendMailServiceImpl implements SendMailService {
     @Autowired
     Secret secret;
 
+    // 予約情報
+    Reservation reservation;
+    // お店情報
+    Shop shop;
+    // ユーザ情報
+    User user;
+
     /* メール送信処理用 */
     SpringTemplateEngine templateEngine;
     ClassLoaderTemplateResolver templateResolver;
+    Context context;
     // テンプレート名
     private String templateName;
+    // メールボディ部
+    private String mailBody;
+    // メールテンプレート定義
+    private static final String MAIL_TEMPLATE_PATH_ROOT = "templates/mail/";
+    // メールテンプレートHTML用
+    private static final String MAIL_TEMPLATE_HTML = "html";
+    // メール文字コード
+    private static final String MAIL_CHARACTER_CODE= "UTF-8";
 
     @Override
     public boolean sendMail(Request request) {
-        /* リクエスト種別毎の初期処理 */
+        // リクエスト種別毎の初期処理
         this.init(request);
 
-        /* データ取得 */
-        System.out.println("SendMailServiceImpl");
-        Reservation reservation = reservationMapper.select(request.getReservationId());
-        System.out.println(reservation);
-        Shop shop = shopMapper.select(reservation.getShopId());
-        System.out.println(shop);
-        User user = secret.getUser(reservation.getUserId());
-        System.out.println(user);
+        // データ取得
+        this.getData();
 
-        Context context = new Context();
-        String body = this.getHtmlMailBody(context);
-        System.out.println(body);
+        // ボディ部取得
+        this.getMailBody();
+
+        // メール送信
+        //this.send();
+
         return true;
     }
 
@@ -57,9 +73,11 @@ public class SendMailServiceImpl implements SendMailService {
      * リクエスト種別毎の初期処理
      */
     private void init(Request request) {
-        // 初期化 コンストラクタでやらせるべき？要調査
+        // 初期化 コンストラクタでやらせるべき？Autowiredされたサービスをどう初期化すべきか要調査
+        this.request = request;
         this.templateEngine = new SpringTemplateEngine();
         this.templateResolver = new ClassLoaderTemplateResolver();
+        this.context = new Context();
 
         switch (request.getType()) { // スマートな方法ありそうだが、とりあえずswitchで分岐
         case "USER_NEW": // ユーザ向け新規
@@ -87,23 +105,50 @@ public class SendMailServiceImpl implements SendMailService {
     }
 
     /**
-     * HTMLメールのBody部を取得
+     * データ取得
      */
-    private String getHtmlMailBody(Context context) {
-        this.templateEngine.setTemplateResolver(this.mailTemplateResolver());
-        return this.templateEngine.process(this.templateName, context); // メソッド構成変える必要ありそう
+    private void getData() {
+        // 予約情報取得
+        this.reservation = reservationMapper.select(request.getReservationId());
+        System.out.println(this.reservation);
+        // お店情報取得
+        this.shop = shopMapper.select(reservation.getShopId());
+        System.out.println(this.shop);
+        // ユーザ情報取得
+        user = secret.getUser(this.reservation.getUserId());
+        System.out.println(this.user);
 
     }
 
     /**
-     * メールテンプレート解決
+     * 送信するメールBody部を取得
      */
-    private ClassLoaderTemplateResolver mailTemplateResolver() {
-        this.templateResolver.setTemplateMode(TemplateMode.HTML);
-        this.templateResolver.setPrefix("templates/mail/html/");
-        this.templateResolver.setSuffix(".html");
-        this.templateResolver.setCharacterEncoding("UTF-8");
+    private void getMailBody() {
+        this.templateEngine.setTemplateResolver(this.getMailTemplateResolver());
+        this.mailBody = templateEngine.process(this.templateName, this.context);
+        System.out.println(this.mailBody);
+    }
+
+    /**
+     * メールテンプレートリゾルバ設定
+     */
+    private ClassLoaderTemplateResolver getMailTemplateResolver() {
+        // テキストメール分岐を作る場合に備えて分岐してリゾルバ設定
+        if (isHtmlMail()) {
+            this.templateResolver.setTemplateMode(TemplateMode.HTML);
+            String prefix = SendMailServiceImpl.MAIL_TEMPLATE_PATH_ROOT + SendMailServiceImpl.MAIL_TEMPLATE_HTML + '/';
+            this.templateResolver.setPrefix(prefix);
+            this.templateResolver.setSuffix("." + SendMailServiceImpl.MAIL_TEMPLATE_HTML);
+        }
+        this.templateResolver.setCharacterEncoding(SendMailServiceImpl.MAIL_CHARACTER_CODE);
         this.templateResolver.setCacheable(true);
-        return templateResolver; // メソッド構成変える必要ありそう
+        return templateResolver;
+    }
+
+    /**
+     * HTMLメール送信判定
+     */
+    private boolean isHtmlMail() {
+        return true; // テキストメール分岐を作る場合用の準備
     }
 }
