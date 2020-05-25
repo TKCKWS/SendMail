@@ -40,7 +40,7 @@ public class SendMailServiceImpl implements SendMailService {
         System.out.println(user);
 
         Context context = new Context();
-        String body = this.getHtmlMailBody("create", context);
+        String body = this.getHtmlMailBody("layout/user/create", context);
         System.out.println(body);
         return true;
     }
@@ -61,7 +61,7 @@ public class SendMailServiceImpl implements SendMailService {
     private ClassLoaderTemplateResolver mailTemplateResolver() {
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
         templateResolver.setTemplateMode(TemplateMode.HTML);
-        templateResolver.setPrefix("templates/mail/html/layout/user/");
+        templateResolver.setPrefix("templates/mail/html/");
         templateResolver.setSuffix(".html");
         templateResolver.setCharacterEncoding("UTF-8");
         templateResolver.setCacheable(true);

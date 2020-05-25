@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head>
+        <meta charset="UTF-8"></meta>
+    </head>
+    <body>
+        <div th:fragment="reservation_information" th:remove="tag">
+           ▼予約情報<br />
+            予約番号 : 予約ID<br />
+            お店名 : お店名<br />
+            予約日 : X月X日<br />
+            予約時間 : XX:XX - YY:YY<br />
+            予約人数 : 予約人数<br />
+        </div>
+    </body>
+</html>
