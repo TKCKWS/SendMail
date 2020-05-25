@@ -7,6 +7,7 @@
             - sendmail
                 - domain `ドメイン層`
                     - model `モデルクラス`
+                        - Request.java `Request情報`
                         - Reservation.java `予約情報`
                         - Shop.java `お店情報`
                         - User.java `ユーザ情報`
@@ -18,19 +19,39 @@
                         - SendMailService.java `メール送信処理インターフェイス`
                         - impl `ビジネスロジッククラス(実装)`
                             - SendMailServiceImpl.java `メール送信処理(共通的処理の実装用)`
-                            - SendMailServiceCancelImpl.java `キャンセルメール送信処理`
-                            - SendMailServiceCreateImpl.java `新規予約メール送信処理`
-                            - SendMailServiceUpdateImpl.java `更新メール送信処理`
                 - external `外部層`
+                    - External.Config `外部層コンフィグ`
                     - Secret.java `秘密情報取得処理インターフェイス`
-                        - impl `ユーザ情報取得処理`
+                        - impl `外部層(実装)`
+                            - SecretUserImpl.java `秘密情報(ユーザ)取得処理`
                 - api
                     - controller `コントローラ`
                         - SendMailController.java `メール送信APIコントローラ`
         - resources
+            - data.sql `初期起動時実行されるDML`
+            - schema.sql `初期起動時実行されるDDL`
             - com.example.demo.sendmail.domain.repository.mybatis
-                - ReservationMapper.xml
-                - UserMapper.xml
+                - ReservationMapper.xml `予約情報取得SQL定義`
+                - ShopMapper.xml `お店情報取得SQL定義`
+            - templates `Thymeleafテンプレート`
+                - mail
+                    - html `HTMLメールテンプレート`
+                        - layout `レイアウト`
+                            - user `ユーザ向けレイアウト`
+                                - new.html `ユーザ向け新規HTMLメールテンプレート`
+                                - update.html `ユーザ向け変更HTMLメールテンプレート`
+                                - cancel.html `ユーザ向けキャンセルHTMLメールテンプレート`
+                            - shop `お店向けレイアウト`
+                                - new.html `お店向け新規HTMLメールテンプレート`
+                                - update.html `お店向け変更HTMLメールテンプレート`
+                                - cancel.html `お店向けキャンセルHTMLメールテンプレート`
+                        - partial `レイアウトから読み込まれるテンプレート部品`
+                            - common `ユーザ向け/お店向け双方から使用されるテンプレート部品`
+                                - footer.html `共通フッター`
+                            - user `ユーザ向けテンプレート部品`
+                                - reservation_information.html `ユーザ向け予約情報テンプレート部品`
+                            - shop `お店向けテンプレート部品`
+                                - reservation_information.html `お店向け予約情報テンプレート部品`
     - test
         - java.com.example.demo
         - resources

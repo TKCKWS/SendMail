@@ -13,6 +13,7 @@ public class SecretUserImpl implements Secret {
 
         user.setName("予約太郎");
         user.setMailAddress("yoyaku_tarou@example.com");
+        user.setTelephoneNumber("09012345678");
 
         return user;
     }
