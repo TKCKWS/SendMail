@@ -7,6 +7,7 @@
             - sendmail
                 - domain `ドメイン層`
                     - model `モデルクラス`
+                        - Request.java `Request情報`
                         - Reservation.java `予約情報`
                         - Shop.java `お店情報`
                         - User.java `ユーザ情報`
@@ -22,15 +23,19 @@
                             - SendMailServiceCreateImpl.java `新規予約メール送信処理`
                             - SendMailServiceUpdateImpl.java `更新メール送信処理`
                 - external `外部層`
+                    - External.Config `外部層コンフィグ`
                     - Secret.java `秘密情報取得処理インターフェイス`
-                        - impl `ユーザ情報取得処理`
+                        - impl `外部層(実装)`
+                            - SecretUserImpl.java `秘密情報(ユーザ)取得処理`
                 - api
                     - controller `コントローラ`
                         - SendMailController.java `メール送信APIコントローラ`
         - resources
+            - data.sql `初期起動時実行されるDML`
+            - schema.sql `初期起動時実行されるDDL`
             - com.example.demo.sendmail.domain.repository.mybatis
-                - ReservationMapper.xml
-                - UserMapper.xml
+                - ReservationMapper.xml `予約情報取得SQL定義`
+                - ShopMapper.xml `お店情報取得SQL定義`
     - test
         - java.com.example.demo
         - resources
