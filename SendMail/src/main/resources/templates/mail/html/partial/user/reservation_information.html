@@ -7,16 +7,21 @@
     <body>
         <div th:fragment="reservation_information" th:remove="tag">
            ▼予約情報<br />
-            予約番号 : 予約ID<br />
-            お店名 : お店名<br />
-            予約日 : X月X日<br />
-            予約時間 : XX:XX - YY:YY<br />
-            予約人数 : 予約人数<br />
-            <br />
+            予約番号 : <span th:text="${reservationId}" th:remove="tag"></span><br />
+            お店名 : <span th:text="${shopName}" th:remove="tag"></span><br />
+            予約日 : <span th:text="${reservationDate}" th:remove="tag"></span><br />
+            予約時間 : <span th:text="${reservationStart}" th:remove="tag"></span> -
+                       <span th:text="${reservationEnd}" th:remove="tag"></span><br />
+            予約人数 : <span th:text="${reservationNumber}" th:remove="tag"></span><br />
         </div>
         <div th:fragment="reservation_detail_link" th:remove="tag">
-            キャンセルの場合はトルツメ<br />
-            ▼来店予約の確認・修正・キャンセルはこちら<br />
+            <br />
+            <div th:unless="${isCancel}" th:remove="tag">
+                ▼来店予約の確認・修正・キャンセルはこちら<br />
+            </div>
+            <div th:if="${isCancel}" th:remove="tag">
+                ▼キャンセル済の来店予約確認はこちら<br />
+            </div>
             URL<br />
         </div>
     </body>

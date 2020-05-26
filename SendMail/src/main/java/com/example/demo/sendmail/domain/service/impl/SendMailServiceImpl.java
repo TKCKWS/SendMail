@@ -1,5 +1,8 @@
 package com.example.demo.sendmail.domain.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
@@ -7,6 +10,8 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
+import com.example.demo.sendmail.constants.RequestType;
+import com.example.demo.sendmail.constants.constants;
 import com.example.demo.sendmail.domain.model.Request;
 import com.example.demo.sendmail.domain.model.Reservation;
 import com.example.demo.sendmail.domain.model.Shop;
@@ -50,7 +55,7 @@ public class SendMailServiceImpl implements SendMailService {
     // メールテンプレートHTML用
     private static final String MAIL_TEMPLATE_HTML = "html";
     // メール文字コード
-    private static final String MAIL_CHARACTER_CODE= "UTF-8";
+    private static final String MAIL_CHARACTER_CODE = "UTF-8";
 
     @Override
     public boolean sendMail(Request request) {
@@ -60,6 +65,7 @@ public class SendMailServiceImpl implements SendMailService {
         // データ取得
         this.getData();
 
+        // 出力内容設定
         this.setContext();
 
         // ボディ部取得
@@ -81,23 +87,23 @@ public class SendMailServiceImpl implements SendMailService {
         this.templateResolver = new ClassLoaderTemplateResolver();
         this.context = new Context();
 
-        switch (request.getType()) { // スマートな方法ありそうだが、とりあえずswitchで分岐
-        case "USER_NEW": // ユーザ向け新規
+        switch (RequestType.valueOf(request.getType())) { // スマートな方法ありそうだが、とりあえずswitchで分岐
+        case USER_NEW: // ユーザ向け新規
             this.templateName = "layout/user/new";
             break;
-        case "USER_UPDATE": // ユーザ向け更新
+        case USER_UPDATE: // ユーザ向け更新
             this.templateName = "layout/user/update";
             break;
-        case "USER_CANCEL": // ユーザ向けキャンセル
+        case USER_CANCEL: // ユーザ向けキャンセル
             this.templateName = "layout/user/cancel";
             break;
-        case "SHOP_NEW": // お店向け新規
+        case SHOP_NEW: // お店向け新規
             this.templateName = "layout/shop/new";
             break;
-        case "SHOP_UPDATE": // お店向け更新
+        case SHOP_UPDATE: // お店向け更新
             this.templateName = "layout/shop/update";
             break;
-        case "SHOP_CANCEL": // お店向けキャンセル
+        case SHOP_CANCEL: // お店向けキャンセル
             this.templateName = "layout/shop/cancel";
             break;
         default:
@@ -125,7 +131,37 @@ public class SendMailServiceImpl implements SendMailService {
      * 出力内容設定
      */
     private void setContext() {
+
+        /* 予約情報 */
+        // 予約ID
+        this.context.setVariable("reservationId", this.reservation.getReservationId());
+        // 予約日
+        this.context.setVariable("reservationDate",
+                this.convertLocalDateTimeToString(this.reservation.getReservationStart(),
+                        constants.DATE_FORMAT_YMD));
+        // 予約開始時間
+        this.context.setVariable("reservationStart",
+                this.convertLocalDateTimeToString(this.reservation.getReservationStart(),
+                        constants.TIME_FORMAT_HM));
+        // 予約終了時間
+        this.context.setVariable("reservationEnd",
+                this.convertLocalDateTimeToString(this.reservation.getReservationEnd(),
+                        constants.TIME_FORMAT_HM));
+        // 予約人数
+        this.context.setVariable("reservationNumber", this.reservation.getNumber());
+        // キャンセルメール判定
+        this.context.setVariable("isCancel", RequestType.isCancel(this.request.getType()));
+
+        /* お店情報 */
+        this.context.setVariable("shopName", this.shop.getName());
+
+        /* ユーザ情報 */
+        // ユーザ名
         this.context.setVariable("userName", this.user.getName());
+        // 電話番号
+        this.context.setVariable("userTelephoneNumber", this.user.getTelephoneNumber());
+
+        /* その他 */
     }
 
     /**
@@ -159,4 +195,13 @@ public class SendMailServiceImpl implements SendMailService {
     private boolean isHtmlMail() {
         return true; // テキストメール分岐を作る場合用の準備
     }
+
+    /**
+     * 日時文字列変換
+     */
+    private String convertLocalDateTimeToString(LocalDateTime localDateTime, String pattern) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        return localDateTime.format(formatter);
+    }
+
 }
