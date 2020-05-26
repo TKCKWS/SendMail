@@ -14,9 +14,14 @@
                        <span th:text="${reservationEnd}" th:remove="tag"></span><br />
             予約人数 : <span th:text="${reservationNumber}" th:remove="tag"></span><br />
         </div>
-        <div th:if="${! isCancel}" th:fragment="reservation_detail_link" th:remove="tag">
+        <div th:fragment="reservation_detail_link" th:remove="tag">
             <br />
-            ▼来店予約の確認・修正・キャンセルはこちら<br />
+            <div th:unless="${isCancel}" th:remove="tag">
+                ▼来店予約の確認・修正・キャンセルはこちら<br />
+            </div>
+            <div th:if="${isCancel}" th:remove="tag">
+                ▼キャンセル済の来店予約確認はこちら<br />
+            </div>
             URL<br />
         </div>
     </body>

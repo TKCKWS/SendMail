@@ -57,9 +57,6 @@ public class SendMailServiceImpl implements SendMailService {
     // メール文字コード
     private static final String MAIL_CHARACTER_CODE = "UTF-8";
 
-    // 日時フォーマット
-    private static final String DATE_FORMAT_YMD = "yyyy/MM/dd";
-
     @Override
     public boolean sendMail(Request request) {
         // リクエスト種別毎の初期処理

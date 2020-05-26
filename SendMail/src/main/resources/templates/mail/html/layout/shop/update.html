@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <body>
-        予約システムより「お店名」へ予約の変更がありました。
+        予約システムより<span th:text="${shopName}"></span>へ予約の変更がありました。
         <br />
         <div th:insert="partial/shop/reservation_information :: reservation_information"></div>
         <div th:insert="partial/shop/reservation_information :: reservation_detail_link"></div>
