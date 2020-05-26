@@ -2,6 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <body>
         予約システムより「お店名」へ予約のキャンセルがありました。
-          <div th:insert="partial/shop/reservation_information :: reservation_information"></div>
+        <br />
+        <div th:insert="partial/shop/reservation_information :: reservation_information"></div>
+        <div th:insert="partial/shop/reservation_information :: reservation_detail_link"></div>
+        <br />
+        <div th:insert="partial/common/footer :: common_footer"></div>
     </body>
 </html>

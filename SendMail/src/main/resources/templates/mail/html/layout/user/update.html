@@ -2,6 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <body>
         「ユーザ」さん、ご予約の変更を承りました。
-          <div th:insert="partial/user/reservation_information :: reservation_information"></div>
+        <br />
+        <div th:insert="partial/user/reservation_information :: reservation_information"></div>
+        <div th:insert="partial/user/reservation_information :: reservation_detail_link"></div>
+        <br />
+        <div th:insert="partial/common/footer :: common_footer"></div>
     </body>
 </html>

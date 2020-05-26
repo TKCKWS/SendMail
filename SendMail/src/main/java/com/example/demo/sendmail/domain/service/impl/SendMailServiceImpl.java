@@ -1,5 +1,8 @@
 package com.example.demo.sendmail.domain.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
@@ -7,6 +10,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
+import com.example.demo.sendmail.constants.constants;
 import com.example.demo.sendmail.domain.model.Request;
 import com.example.demo.sendmail.domain.model.Reservation;
 import com.example.demo.sendmail.domain.model.Shop;
@@ -50,7 +54,10 @@ public class SendMailServiceImpl implements SendMailService {
     // メールテンプレートHTML用
     private static final String MAIL_TEMPLATE_HTML = "html";
     // メール文字コード
-    private static final String MAIL_CHARACTER_CODE= "UTF-8";
+    private static final String MAIL_CHARACTER_CODE = "UTF-8";
+
+    // 日時フォーマット
+    private static final String DATE_FORMAT_YMD = "yyyy/MM/dd";
 
     @Override
     public boolean sendMail(Request request) {
@@ -60,6 +67,7 @@ public class SendMailServiceImpl implements SendMailService {
         // データ取得
         this.getData();
 
+        // 出力内容設定
         this.setContext();
 
         // ボディ部取得
@@ -125,7 +133,31 @@ public class SendMailServiceImpl implements SendMailService {
      * 出力内容設定
      */
     private void setContext() {
+
+        /* ユーザ情報 */
+        // ユーザ名
         this.context.setVariable("userName", this.user.getName());
+
+        /* 予約情報 */
+        // 予約ID
+        this.context.setVariable("reservationId", this.reservation.getReservationId());
+        // 予約日
+        this.context.setVariable("reservationDate",
+                this.convertLocalDateTimeToString(this.reservation.getReservationStart(),
+                        constants.DATE_FORMAT_YMD));
+        // 予約開始時間
+        this.context.setVariable("reservationStart",
+                this.convertLocalDateTimeToString(this.reservation.getReservationStart(),
+                        constants.TIME_FORMAT_HM));
+        // 予約終了時間
+        this.context.setVariable("reservationEnd",
+                this.convertLocalDateTimeToString(this.reservation.getReservationEnd(),
+                        constants.TIME_FORMAT_HM));
+        // 予約人数
+        this.context.setVariable("reservationNumber", this.reservation.getNumber());
+
+        /* お店情報 */
+        this.context.setVariable("shopName", this.shop.getName());
     }
 
     /**
@@ -159,4 +191,13 @@ public class SendMailServiceImpl implements SendMailService {
     private boolean isHtmlMail() {
         return true; // テキストメール分岐を作る場合用の準備
     }
+
+    /**
+     * 日時文字列変換
+     */
+    private String convertLocalDateTimeToString(LocalDateTime localDateTime, String pattern) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        return localDateTime.format(formatter);
+    }
+
 }
