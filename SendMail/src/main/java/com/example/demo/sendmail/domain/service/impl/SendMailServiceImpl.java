@@ -132,10 +132,6 @@ public class SendMailServiceImpl implements SendMailService {
      */
     private void setContext() {
 
-        /* ユーザ情報 */
-        // ユーザ名
-        this.context.setVariable("userName", this.user.getName());
-
         /* 予約情報 */
         // 予約ID
         this.context.setVariable("reservationId", this.reservation.getReservationId());
@@ -158,6 +154,14 @@ public class SendMailServiceImpl implements SendMailService {
 
         /* お店情報 */
         this.context.setVariable("shopName", this.shop.getName());
+
+        /* ユーザ情報 */
+        // ユーザ名
+        this.context.setVariable("userName", this.user.getName());
+        // 電話番号
+        this.context.setVariable("userTelephoneNumber", this.user.getTelephoneNumber());
+
+        /* その他 */
     }
 
     /**
