@@ -10,6 +10,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
+import com.example.demo.sendmail.constants.RequestType;
 import com.example.demo.sendmail.constants.constants;
 import com.example.demo.sendmail.domain.model.Request;
 import com.example.demo.sendmail.domain.model.Reservation;
@@ -89,23 +90,23 @@ public class SendMailServiceImpl implements SendMailService {
         this.templateResolver = new ClassLoaderTemplateResolver();
         this.context = new Context();
 
-        switch (request.getType()) { // スマートな方法ありそうだが、とりあえずswitchで分岐
-        case "USER_NEW": // ユーザ向け新規
+        switch (RequestType.valueOf(request.getType())) { // スマートな方法ありそうだが、とりあえずswitchで分岐
+        case USER_NEW: // ユーザ向け新規
             this.templateName = "layout/user/new";
             break;
-        case "USER_UPDATE": // ユーザ向け更新
+        case USER_UPDATE: // ユーザ向け更新
             this.templateName = "layout/user/update";
             break;
-        case "USER_CANCEL": // ユーザ向けキャンセル
+        case USER_CANCEL: // ユーザ向けキャンセル
             this.templateName = "layout/user/cancel";
             break;
-        case "SHOP_NEW": // お店向け新規
+        case SHOP_NEW: // お店向け新規
             this.templateName = "layout/shop/new";
             break;
-        case "SHOP_UPDATE": // お店向け更新
+        case SHOP_UPDATE: // お店向け更新
             this.templateName = "layout/shop/update";
             break;
-        case "SHOP_CANCEL": // お店向けキャンセル
+        case SHOP_CANCEL: // お店向けキャンセル
             this.templateName = "layout/shop/cancel";
             break;
         default:
@@ -155,6 +156,8 @@ public class SendMailServiceImpl implements SendMailService {
                         constants.TIME_FORMAT_HM));
         // 予約人数
         this.context.setVariable("reservationNumber", this.reservation.getNumber());
+        // キャンセルメール判定
+        this.context.setVariable("isCancel", RequestType.isCancel(this.request.getType()));
 
         /* お店情報 */
         this.context.setVariable("shopName", this.shop.getName());

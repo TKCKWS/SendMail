@@ -13,10 +13,9 @@
             予約時間 : <span th:text="${reservationStart}" th:remove="tag"></span> -
                        <span th:text="${reservationEnd}" th:remove="tag"></span><br />
             予約人数 : <span th:text="${reservationNumber}" th:remove="tag"></span><br />
-            <br />
         </div>
-        <div th:fragment="reservation_detail_link" th:remove="tag">
-            キャンセルの場合はトルツメ<br />
+        <div th:if="${! isCancel}" th:fragment="reservation_detail_link" th:remove="tag">
+            <br />
             ▼来店予約の確認・修正・キャンセルはこちら<br />
             URL<br />
         </div>
