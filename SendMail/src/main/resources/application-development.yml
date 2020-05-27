@@ -1,0 +1,7 @@
+sendmail:
+  url:
+    fqdn:
+      user:
+        reserve: http:localhost:8080
+      shop:
+        resreve: http:localhost:8080
