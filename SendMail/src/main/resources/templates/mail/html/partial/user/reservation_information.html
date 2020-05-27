@@ -22,7 +22,7 @@
             <div th:if="${isCancel}" th:remove="tag">
                 ▼キャンセル済の来店予約確認はこちら<br />
             </div>
-            URL<br />
+            <span th:text="${userReserveUrl}" th:remove="tag"></span><br />
         </div>
     </body>
 </html>

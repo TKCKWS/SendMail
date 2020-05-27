@@ -10,6 +10,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
+import com.example.demo.SendMailConfig;
 import com.example.demo.sendmail.constants.RequestType;
 import com.example.demo.sendmail.constants.constants;
 import com.example.demo.sendmail.domain.model.Request;
@@ -34,6 +35,8 @@ public class SendMailServiceImpl implements SendMailService {
     ShopMapper shopMapper;
     @Autowired
     Secret secret;
+    @Autowired
+    SendMailConfig config;
 
     // 予約情報
     Reservation reservation;
@@ -50,12 +53,6 @@ public class SendMailServiceImpl implements SendMailService {
     private String templateName;
     // メールボディ部
     private String mailBody;
-    // メールテンプレート定義
-    private static final String MAIL_TEMPLATE_PATH_ROOT = "templates/mail/";
-    // メールテンプレートHTML用
-    private static final String MAIL_TEMPLATE_HTML = "html";
-    // メール文字コード
-    private static final String MAIL_CHARACTER_CODE = "UTF-8";
 
     @Override
     public boolean sendMail(Request request) {
@@ -162,6 +159,15 @@ public class SendMailServiceImpl implements SendMailService {
         this.context.setVariable("userTelephoneNumber", this.user.getTelephoneNumber());
 
         /* その他 */
+        // ユーザ予約URL(FQDN部分は環境により分岐させるため、Configから取得)
+        String userReserveUrl = config.getUserReserveFQDN() + constants.USER_RESERVE_URL;
+        userReserveUrl += "?" + reservation.getReservationId(); //パラメータ追加
+        this.context.setVariable("userReserveUrl", userReserveUrl);
+
+        // ユーザ予約URL(FQDN部分は環境により分岐させるため、Configから取得)
+        String shopReserveUrl = config.getUserReserveFQDN() + constants.SHOP_RESERVE_URL;
+        shopReserveUrl += "?" + reservation.getReservationId(); //パラメータ追加
+        this.context.setVariable("shopReserveUrl", shopReserveUrl);
     }
 
     /**
@@ -180,11 +186,11 @@ public class SendMailServiceImpl implements SendMailService {
         // テキストメール分岐を作る場合に備えて分岐してリゾルバ設定
         if (isHtmlMail()) {
             this.templateResolver.setTemplateMode(TemplateMode.HTML);
-            String prefix = SendMailServiceImpl.MAIL_TEMPLATE_PATH_ROOT + SendMailServiceImpl.MAIL_TEMPLATE_HTML + '/';
+            String prefix = constants.MAIL_TEMPLATE_PATH_ROOT + constants.MAIL_TEMPLATE_HTML + '/';
             this.templateResolver.setPrefix(prefix);
-            this.templateResolver.setSuffix("." + SendMailServiceImpl.MAIL_TEMPLATE_HTML);
+            this.templateResolver.setSuffix("." + constants.MAIL_TEMPLATE_HTML);
         }
-        this.templateResolver.setCharacterEncoding(SendMailServiceImpl.MAIL_CHARACTER_CODE);
+        this.templateResolver.setCharacterEncoding(constants.MAIL_CHARACTER_CODE);
         this.templateResolver.setCacheable(true);
         return templateResolver;
     }
