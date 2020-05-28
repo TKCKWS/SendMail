@@ -2,6 +2,7 @@ package com.example.demo.sendmail.api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,17 +20,21 @@ public class SendMailController {
 
     /**
      * メール送信用処理
+     * @throws Exception
      */
     @GetMapping("/sendmail")
-    public String sendMail(@ModelAttribute @Validated Request request) {
+    public String sendMail(@ModelAttribute @Validated Request request, Errors errors) throws Exception {
         System.out.println(request);
+        if(errors.hasErrors()) {
+            System.out.println(errors);
+            throw new IllegalArgumentException();
+        }
 
         try {
-            System.out.println("service");
             service.sendMail(request);
         } catch (Exception e) {
             System.out.println(e);
-            return "NG";
+            throw e;
         }
 
         return "OK";

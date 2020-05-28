@@ -20,6 +20,7 @@ import com.example.demo.sendmail.domain.model.User;
 import com.example.demo.sendmail.domain.repository.mybatis.ReservationMapper;
 import com.example.demo.sendmail.domain.repository.mybatis.ShopMapper;
 import com.example.demo.sendmail.domain.service.SendMailService;
+import com.example.demo.sendmail.exception.ReservationNotFoundException;
 import com.example.demo.sendmail.external.Secret;
 
 @Service("SendMailServiceImpl")
@@ -55,7 +56,7 @@ public class SendMailServiceImpl implements SendMailService {
     private String mailBody;
 
     @Override
-    public boolean sendMail(Request request) {
+    public boolean sendMail(Request request) throws Exception{
         // リクエスト種別毎の初期処理
         this.init(request);
 
@@ -112,9 +113,13 @@ public class SendMailServiceImpl implements SendMailService {
     /**
      * データ取得
      */
-    private void getData() {
+    private void getData() throws Exception {
+
         // 予約情報取得
         this.reservation = reservationMapper.select(request.getReservationId());
+        if (this.reservation == null) {
+            throw new ReservationNotFoundException();
+        }
         System.out.println(this.reservation);
         // お店情報取得
         this.shop = shopMapper.select(reservation.getShopId());

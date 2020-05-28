@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class Request {
     @NotBlank
-    @SendMailType
+    @SendMailType // メール送信種別カスタムバリデーション
     private String type; // リクエスト種別
 
     @NotNull
