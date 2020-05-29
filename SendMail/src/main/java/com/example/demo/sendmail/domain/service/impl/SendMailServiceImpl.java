@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSendException;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -21,6 +24,7 @@ import com.example.demo.sendmail.domain.repository.mybatis.ReservationMapper;
 import com.example.demo.sendmail.domain.repository.mybatis.ShopMapper;
 import com.example.demo.sendmail.domain.service.SendMailService;
 import com.example.demo.sendmail.exception.ReservationNotFoundException;
+import com.example.demo.sendmail.exception.UserNotFoundException;
 import com.example.demo.sendmail.external.Secret;
 
 @Service("SendMailServiceImpl")
@@ -47,16 +51,20 @@ public class SendMailServiceImpl implements SendMailService {
     User user;
 
     /* メール送信処理用 */
+    @Autowired
+    private MailSender mailSender;
     SpringTemplateEngine templateEngine;
     ClassLoaderTemplateResolver templateResolver;
     Context context;
     // テンプレート名
     private String templateName;
+    // 件名
+    private String mailSubject;
     // メールボディ部
     private String mailBody;
 
     @Override
-    public boolean sendMail(Request request) throws Exception{
+    public boolean sendMail(Request request) throws Exception {
         // リクエスト種別毎の初期処理
         this.init(request);
 
@@ -88,21 +96,27 @@ public class SendMailServiceImpl implements SendMailService {
         switch (RequestType.valueOf(request.getType())) { // スマートな方法ありそうだが、とりあえずswitchで分岐
         case USER_NEW: // ユーザ向け新規
             this.templateName = "layout/user/new";
+            this.mailSubject = constants.MAIL_SUBJECT_USER_NEW;
             break;
         case USER_UPDATE: // ユーザ向け更新
             this.templateName = "layout/user/update";
+            this.mailSubject = constants.MAIL_SUBJECT_USER_UPDATE;
             break;
         case USER_CANCEL: // ユーザ向けキャンセル
             this.templateName = "layout/user/cancel";
+            this.mailSubject = constants.MAIL_SUBJECT_USER_CANCEL;
             break;
         case SHOP_NEW: // お店向け新規
             this.templateName = "layout/shop/new";
+            this.mailSubject = constants.MAIL_SUBJECT_SHOP_NEW;
             break;
         case SHOP_UPDATE: // お店向け更新
             this.templateName = "layout/shop/update";
+            this.mailSubject = constants.MAIL_SUBJECT_SHOP_UPDATE;
             break;
         case SHOP_CANCEL: // お店向けキャンセル
             this.templateName = "layout/shop/cancel";
+            this.mailSubject = constants.MAIL_SUBJECT_SHOP_CANCEL;
             break;
         default:
             // バリデーションを作った後は入らないはず Exceptionをthrow?
@@ -123,9 +137,15 @@ public class SendMailServiceImpl implements SendMailService {
         System.out.println(this.reservation);
         // お店情報取得
         this.shop = shopMapper.select(reservation.getShopId());
+        if (this.shop == null) {
+            throw new ReservationNotFoundException();
+        }
         System.out.println(this.shop);
         // ユーザ情報取得
-        user = secret.getUser(this.reservation.getUserId());
+        this.user = secret.getUser(this.reservation.getUserId());
+        if (this.user == null) {
+            throw new UserNotFoundException();
+        }
         System.out.println(this.user);
     }
 
@@ -173,6 +193,22 @@ public class SendMailServiceImpl implements SendMailService {
         String shopReserveUrl = config.getUserReserveFQDN() + constants.SHOP_RESERVE_URL;
         shopReserveUrl += "?" + reservation.getReservationId(); //パラメータ追加
         this.context.setVariable("shopReserveUrl", shopReserveUrl);
+
+        // Thymeleafサンプル(勉強用)
+        this.getSample();
+    }
+
+    /**
+     * ThymeleafSample
+     */
+    private void getSample() {
+        this.templateName = "layout/sample";
+        this.context.setVariable("atai", "値");
+        this.context.setVariable("atai2", "値2");
+        this.context.setVariable("not_sanitize", "<br>");
+        this.context.setVariable("shin", true);
+        this.context.setVariable("gi", false);
+        this.context.setVariable("takou", "1");
     }
 
     /**
@@ -198,6 +234,25 @@ public class SendMailServiceImpl implements SendMailService {
         this.templateResolver.setCharacterEncoding(constants.MAIL_CHARACTER_CODE);
         this.templateResolver.setCacheable(true);
         return templateResolver;
+    }
+
+    /**
+     * 送信
+     */
+    @SuppressWarnings("unused") // 送信先ユーザ情報は架空の固定値でプッシュしてあるため首絞め
+    private void send() throws MailSendException {
+        try {
+            SimpleMailMessage msg = new SimpleMailMessage();
+
+            msg.setFrom(config.getSourceMailAddress());
+            msg.setTo(this.user.getMailAddress());
+            msg.setSubject(this.mailSubject);
+            msg.setText(this.mailBody);
+
+            this.mailSender.send(msg);
+        } catch (Exception e) {
+            throw new MailSendException("mail send error");
+        }
     }
 
     /**

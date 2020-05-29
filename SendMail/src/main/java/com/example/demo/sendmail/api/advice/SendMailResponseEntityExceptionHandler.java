@@ -10,7 +10,9 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.example.demo.sendmail.api.ErrorResponseBody;
+import com.example.demo.sendmail.exception.MailSendException;
 import com.example.demo.sendmail.exception.ReservationNotFoundException;
+import com.example.demo.sendmail.exception.UserNotFoundException;
 
 @RestControllerAdvice
 public class SendMailResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
@@ -50,13 +52,40 @@ public class SendMailResponseEntityExceptionHandler extends ResponseEntityExcept
 
     // 予約が見つからないExceptionの捕捉
     @ExceptionHandler(ReservationNotFoundException.class)
-    public ResponseEntity<Object> handleSendMailException(Exception exception, WebRequest request) {
+    public ResponseEntity<Object> handleReservationNotFoundException(ReservationNotFoundException exception,
+            WebRequest request) {
         HttpHeaders headers = new HttpHeaders();
 
         return super.handleExceptionInternal(exception,
                 createErrorResponseBody(exception, request),
                 headers,
                 HttpStatus.BAD_REQUEST,
+                request);
+    }
+
+    // 予約が見つからないExceptionの捕捉
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Object> handleUserNotFoundExceptionlException(UserNotFoundException exception,
+            WebRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+
+        return super.handleExceptionInternal(exception,
+                createErrorResponseBody(exception, request),
+                headers,
+                HttpStatus.NOT_FOUND,
+                request);
+    }
+
+    // 予約が見つからないExceptionの捕捉
+    @ExceptionHandler(MailSendException.class)
+    public ResponseEntity<Object> handleUserNotFoundExceptionlException(MailSendException exception,
+            WebRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+
+        return super.handleExceptionInternal(exception,
+                createErrorResponseBody(exception, request),
+                headers,
+                HttpStatus.INTERNAL_SERVER_ERROR,
                 request);
     }
 

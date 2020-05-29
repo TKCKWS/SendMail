@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <h3>値を表示</h3>
+        <p th:text="${atai}"></p>
+        <h3>値を結合</h3>
+        <p th:text="|${atai}と${atai2}|"></p>
+        <h3>HTMLをサニタイズしない</h3>
+        <p th:utext="${not_sanitize}"></p>
+        <h3>ローカル変数定義</h3>
+        <div th:with="x=1,y=2">
+            <p th:text="${x}"></p>
+            <p th:text="${y}"></p>
+        </div>
+        <h3>算術演算子</h3>
+        <p th:text="11 + 5"></p>
+        <p th:text="11 - 5"></p>
+        <p th:text="11 * 5"></p>
+        <p th:text="11 / 5"></p>
+        <p th:text="11 % 5"></p>
+        <h3>比較演算子</h3>
+        <p th:text="11 &gt; 5"></p>
+        <h3>条件式</h3>
+        <p th:text="1 ? even : odd"></p>
+        <p th:text="0 ? eve : odd"></p>
+        <h3>if</h3>
+        <div th:if="${shin}">
+            <p>真</p>
+        </div>
+        <h3>unless</h3>
+        <div th:unless="${gi}">
+            <p>真</p>
+        </div>
+        <h3>多項分岐</h3>
+        <div th:switch="${takou}">
+            <p th:case="1" th:text="|${takou} ルート1|"></p>
+            <p th:case="2" th:text="|${takou} ルート2|"></p>
+            <p th:case="*">対象なし</p>
+        </div>
+        <h3>Stringクラスのオブジェクト</h3>
+        <p th:text="${#strings.toUpperCase('Hello Thymeleaf')}"></p>
+        <h3>インスタンス生成</h3>
+        <p th:text="${new java.util.Date().toString()}"></p>
+        <h3>日付フォーマット</h3>
+        <p th:text="${#dates.format(new java.util.Date(),'yyyy/MM/dd')}"></p>
+        <h3>見えないコメント</h3>
+        <!-- 見えるコメント -->
+        <!--/*--> 見えないコメント <!--*/-->
+    </body>
+</html>

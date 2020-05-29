@@ -25,6 +25,7 @@ public class SendMailController {
     @GetMapping("/sendmail")
     public String sendMail(@ModelAttribute @Validated Request request, Errors errors) throws Exception {
         System.out.println(request);
+        // バリデーションエラーが渡されたら、IllegalArgumentExceptionをthrow
         if(errors.hasErrors()) {
             System.out.println(errors);
             throw new IllegalArgumentException();
@@ -33,6 +34,7 @@ public class SendMailController {
         try {
             service.sendMail(request);
         } catch (Exception e) {
+            // Controllerでログ出力して、ControllerAdviceで例外をhandleのイメージ
             System.out.println(e);
             throw e;
         }
