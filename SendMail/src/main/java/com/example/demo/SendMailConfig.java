@@ -17,4 +17,7 @@ public class SendMailConfig {
     // お店予約FQDN
     @Value("${sendmail.url.fqdn.user.reserve}")
     private String shopReserveFQDN;
+    // 送信元メールアドレス
+    @Value("$spring.mail.username")
+    private String sourceMailAddress;
 }

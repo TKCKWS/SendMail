@@ -16,3 +16,11 @@ spring:
     check-template-location: false
   profiles:
     active: development
+  #mail
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: メールアドレス
+    password: パスワード
+    properties.mail.smtp.auth: true
+    properties.mail.smtp.starttls.enable: true
