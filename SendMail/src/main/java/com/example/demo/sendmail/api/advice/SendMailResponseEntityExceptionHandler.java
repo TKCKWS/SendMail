@@ -10,59 +10,69 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.example.demo.sendmail.api.ErrorResponseBody;
+import com.example.demo.sendmail.exception.ReservationNotFoundException;
 
 @RestControllerAdvice
 public class SendMailResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
-    // MethodArgumentNotValidExceptionの捕捉
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
+    // MethodArgumentNotValidExceptionの捕捉(Spring Bootのエラー)
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException exception,
             HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return super.handleExceptionInternal(exception,
+        return this.handleExceptionInternal(exception,
                 createErrorResponseBody(exception, request),
                 null,
                 HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception exception, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleExceptionInternal(
+            Exception exception, Object body,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
 
         System.out.println("handleExceptionInternal : " + exception.getMessage());
 
-        return super.handleExceptionInternal(exception, body, headers, status, request);
+        return this.handleExceptionInternal(exception, body, headers, status, request);
     }
 
+    // MethodArgumentNotValidExceptionの捕捉
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgumentException(Exception exception, WebRequest request) {
-        return super.handleExceptionInternal(exception, "IllegalArgumentException", null, HttpStatus.BAD_REQUEST, request);
+        return this.handleExceptionInternal(exception,
+                createErrorResponseBody(exception, request),
+                null,
+                HttpStatus.BAD_REQUEST,
+                request);
     }
 
+    // 予約が見つからないExceptionの捕捉
+    @ExceptionHandler(ReservationNotFoundException.class)
+    public ResponseEntity<Object> handleSendMailException(Exception exception, WebRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+
+        return super.handleExceptionInternal(exception,
+                createErrorResponseBody(exception, request),
+                headers,
+                HttpStatus.BAD_REQUEST,
+                request);
+    }
+
+    // 未定義のExceptionを捕捉
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllException(Exception exception, WebRequest request) {
-        return super.handleExceptionInternal(exception, "handleAllException", null, HttpStatus.INTERNAL_SERVER_ERROR, request);
+        return this.handleExceptionInternal(exception, createErrorResponseBody(exception, request),
+                null,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                request);
     }
-
-    // 独自Exceptionの捕捉(独自Exception作成後コメントアウト解除
-    //    @ExceptionHandler(Exception.class)
-    //    public ResponseEntity<Object> handleSendMailException(Exception exception, WebRequest request) {
-    //        HttpHeaders headers = new HttpHeaders();
-    //
-    //        return super.handleExceptionInternal(exception,
-    //                createErrorResponseBody(exception, request),
-    //                headers,
-    //                HttpStatus.BAD_REQUEST,
-    //                request);
-    //    }
 
     // レスポンスのボディ部を作成
     private ErrorResponseBody createErrorResponseBody(Exception exception, WebRequest request) {
 
         ErrorResponseBody errorResponseBody = new ErrorResponseBody();
-        int responseCode = HttpStatus.BAD_REQUEST.value();
-        String responseErrorMessage = HttpStatus.BAD_REQUEST.getReasonPhrase();
-
-        errorResponseBody.setStatus(responseCode);
-        errorResponseBody.setError(responseErrorMessage);
         errorResponseBody.setMessage(exception.getMessage());
 
         return errorResponseBody;
