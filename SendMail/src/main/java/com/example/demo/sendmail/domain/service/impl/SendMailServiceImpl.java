@@ -193,6 +193,22 @@ public class SendMailServiceImpl implements SendMailService {
         String shopReserveUrl = config.getUserReserveFQDN() + constants.SHOP_RESERVE_URL;
         shopReserveUrl += "?" + reservation.getReservationId(); //パラメータ追加
         this.context.setVariable("shopReserveUrl", shopReserveUrl);
+
+        // Thymeleafサンプル(勉強用)
+        this.getSample();
+    }
+
+    /**
+     * ThymeleafSample
+     */
+    private void getSample() {
+        this.templateName = "layout/sample";
+        this.context.setVariable("atai", "値");
+        this.context.setVariable("atai2", "値2");
+        this.context.setVariable("not_sanitize", "<br>");
+        this.context.setVariable("shin", true);
+        this.context.setVariable("gi", false);
+        this.context.setVariable("takou", "1");
     }
 
     /**
